@@ -16,7 +16,7 @@
 
 #define DELAY(_cycles) for(size_t i = 0; i < _cycles; ++i)
 
-void app_main()
+void app_main_alt()
 {
 	printf("app_main starting...\n");
     /* Print chip information */

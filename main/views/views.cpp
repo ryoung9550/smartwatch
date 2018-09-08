@@ -1,6 +1,7 @@
 #include "views.hpp"
+#include <cstring>
 
-IconBox icons[5] {
+IconBox icons[ICON_NUM] {
 	// <<
 	{0x1860, 0x38E0, 0x79E0, 0xFBE0,
 	 0xFBE0, 0x79E0, 0x38E0, 0x1860},
@@ -17,3 +18,12 @@ IconBox icons[5] {
 	{0x0081, 0x0042, 0x0024, 0x0018,
 	 0x0018, 0x0024, 0x0042, 0x0081}
 };
+
+View_Codes main_view(View& view)
+{
+	memcpy(view.btn_0, icons[2], sizeof(IconBox));
+	memcpy(view.btn_1, icons[0], sizeof(IconBox));
+	memcpy(view.btn_2, icons[1], sizeof(IconBox));
+
+	return SAME_VIEW;
+}
