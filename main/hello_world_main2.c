@@ -18,8 +18,7 @@
 
 void app_main()
 {
-    printf("Hello world!\n");
-
+	printf("app_main starting...\n");
     /* Print chip information */
     esp_chip_info_t chip_info;
     esp_chip_info(&chip_info);
