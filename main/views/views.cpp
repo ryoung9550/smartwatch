@@ -1,3 +1,4 @@
+#include "../input.hpp"
 #include "views.hpp"
 #include <cstring>
 
@@ -19,11 +20,11 @@ IconBox icons[ICON_NUM] {
 	 0x0018, 0x0024, 0x0042, 0x0081}
 };
 
-View_Codes main_view(View& view)
+View_Ret main_view(View& view, const Input input)
 {
 	memcpy(view.btn_0, icons[2], sizeof(IconBox));
 	memcpy(view.btn_1, icons[0], sizeof(IconBox));
 	memcpy(view.btn_2, icons[1], sizeof(IconBox));
 
-	return SAME_VIEW;
+	return {SAME_VIEW, nullptr};
 }

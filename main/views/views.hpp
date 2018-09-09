@@ -2,6 +2,7 @@
 #define _VIEWS_HPP
 
 #include <cstdint>
+#include "../input.hpp"
 
 #define ICON_NUM 5
 #define ICON_SIZE 8
@@ -17,17 +18,23 @@ struct View {
 
 extern IconBox icons[ICON_NUM];
 
-enum View_Codes
+enum View_Code
 {
 	SAME_VIEW,
 	BACK_VIEW,
 	NEW_VIEW
 };
 
-View_Codes main_view(View&);
-View_Codes menu_view(View&);
-View_Codes bt_disc_view(View&);
-View_Codes time_adj_view(View&);
+struct View_Ret
+{
+	View_Code retCode;
+	View_Ret (*next_view)(View&, const Input);
+};
+
+View_Ret main_view(View&, const Input);
+View_Ret menu_view(View&, const Input);
+View_Ret bt_disc_view(View&, const Input);
+View_Ret time_adj_view(View&, const Input);
 
 
 #endif // _VIEWS_HPP

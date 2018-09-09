@@ -10,6 +10,6 @@ enum Button_State
 struct Input
 {
 	Button_State btn_0, btn_1, btn_2;
-}
+};
 
 #endif // _INPUT_HPP
