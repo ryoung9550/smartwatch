@@ -4,8 +4,8 @@
 #include <cstdint>
 #include "../input.hpp"
 
-#define ICON_NUM 5
-#define ICON_SIZE 8
+#define ICON_NUM 5 // Number of icons avaiable
+#define ICON_SIZE 8 // Number of uint16s needed for the icon
 
 typedef uint16_t IconBox[ICON_SIZE]; // 16 width pixes and 8 in height
 typedef uint8_t ContentArea[0x300]; // 96x64 area
