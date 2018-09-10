@@ -16,6 +16,7 @@ void app_main()
 
 	// Create Screen object
 	OLED screen = OLED(GPIO_NUM_19, GPIO_NUM_22, SSD1306_128x64);
+	screen.init();
 
 	Input input {BTN_LO, BTN_LO, BTN_LO};
 	View view_screen;
@@ -25,8 +26,11 @@ void app_main()
 	view_stack.push(&main_view);
 	
 	while(!view_stack.empty()) {
+		//printf("running logic\n");
 		View_Ret retCode = view_stack.top()(view_screen, input);
+		//printf("drawing screen\n");
 		drawView(screen, view_screen);
+		//printf("stack processing\n");
 		switch(retCode.retCode) {
 			case SAME_VIEW: break;
 			case BACK_VIEW: view_stack.pop(); break;
