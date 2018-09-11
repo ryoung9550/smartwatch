@@ -1,4 +1,5 @@
 #include "../input.hpp"
+#include "draw.hpp"
 #include "views.hpp"
 #include <cstring>
 
@@ -48,16 +49,16 @@ struct Menu_Item
 };
 
 #define MENU_ITEM_NUM 3
-#define MENU_HEIGHT_GAP 6
-#define SCREEN_MARGIN 16
+#define MENU_HEIGHT_GAP 7
+#define SCREEN_MARGIN 24
 
 Menu_Item menu_items[MENU_ITEM_NUM] = {
-	{"Connect bluetooth device", NEW_VIEW, nullptr},
+	{"Connect BT device", NEW_VIEW, nullptr},
 	{"Setup time", NEW_VIEW, nullptr},
 	{"Exit", BACK_VIEW, nullptr}
 };
 
-unsigned cursor_pos = 0;
+unsigned cursor_pos = 1;
 
 View_Ret menu_view(View& view, const Input input)
 {
@@ -65,10 +66,18 @@ View_Ret menu_view(View& view, const Input input)
 	memcpy(view.btn_1, icons[6], sizeof(IconBox));
 	memcpy(view.btn_2, icons[3], sizeof(IconBox));
 
-	for(int i = 0; i < MENU_ITEM_NUM; ++i) {
-		view.screen->draw_string(SCREEN_MARGIN, (i * (8 + SCREEN_MARGIN)), menu_items[i].name, BLACK, WHITE);
+	if(input.btn_0 == BTN_HI && cursor_pos > 0) {
+		--cursor_pos;
 	}
-	view.screen->refresh(1);
+	else if(input.btn_1 == BTN_HI && cursor_pos < MENU_ITEM_NUM - 1) {
+		++cursor_pos;
+	}
+
+	for(int i = 0; i < MENU_ITEM_NUM; ++i) {
+		view.screen->draw_string(SCREEN_MARGIN, (i * (8 + MENU_HEIGHT_GAP)), menu_items[i].name, WHITE, BLACK);
+	}
+	drawIcon(*view.screen, icons[7], 14, (cursor_pos * (8 + MENU_HEIGHT_GAP) + 1));
+	
 	
 	return {SAME_VIEW, nullptr};
 }
