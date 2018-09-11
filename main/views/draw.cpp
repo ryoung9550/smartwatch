@@ -12,6 +12,20 @@ enum Btn
 	BTN_2
 };
 
+// Draws 16x8 icons
+void drawIcon(OLED& screen, const IconBox& icon, const unsigned& x_adj, const unsigned& y_adj)
+{
+	for(int i = 0; i < ICON_SIZE; ++i) {
+		uint16_t byte_mask = 0x8000;
+		for(int j = 0; j < 16; ++j) {
+			if(byte_mask & icon[i]) {
+				screen.draw_pixel(j + x_adj, i + y_adj, WHITE);
+			}
+			byte_mask = byte_mask >> 1;
+		}
+	}
+}
+
 static void drawBtn(OLED& screen, const IconBox& icon, Btn btn_num)
 {
 	size_t x_adj = 0, y_adj = 0;
@@ -30,16 +44,7 @@ static void drawBtn(OLED& screen, const IconBox& icon, Btn btn_num)
 		y_adj = 56;
 		break;
 	}
-
-	for(int i = 0; i < ICON_SIZE; ++i) {
-		uint16_t byte_mask = 0x8000;
-		for(int j = 0; j < 16; ++j) {
-			if(byte_mask & icon[i]) {
-				screen.draw_pixel(j + x_adj, i + y_adj, WHITE);
-			}
-			byte_mask = byte_mask >> 1;
-		}
-	}
+	drawIcon(screen, icon, x_adj, y_adj);
 }
 
 void drawView(OLED& screen, const View& view)

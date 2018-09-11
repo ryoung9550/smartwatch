@@ -4,9 +4,28 @@
 #include "esp_system.h"
 #include "views/views.hpp"
 #include "views/draw.hpp"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include "ssd1306-driver/include/ssd1306.hpp"
 
 extern "C" void app_main();
+
+Input input {BTN_LO, BTN_LO, BTN_LO};
+
+void IRAM_ATTR btn_0_isr(void* arg)
+{
+	input.btn_0 ^= 1u;
+}
+
+void IRAM_ATTR btn_1_isr(void* arg)
+{
+	input.btn_1 ^= 1u;
+}
+
+void IRAM_ATTR btn_2_isr(void* arg)
+{
+	input.btn_2 ^= 1u;
+}
 
 void app_main()
 {
@@ -17,20 +36,18 @@ void app_main()
 	// Create Screen object
 	OLED screen = OLED(GPIO_NUM_19, GPIO_NUM_22, SSD1306_128x64);
 	screen.init();
+	screen.select_font(1);
 
-	Input input {BTN_LO, BTN_LO, BTN_LO};
 	View view_screen;
+	view_screen.screen = &screen;
 
 	std::stack<View_Ret(*)(View&, const Input)> view_stack;
 	// Push initial View
-	view_stack.push(&main_view);
+	view_stack.push(&menu_view);
 	
 	while(!view_stack.empty()) {
-		//printf("running logic\n");
 		View_Ret retCode = view_stack.top()(view_screen, input);
-		//printf("drawing screen\n");
 		drawView(screen, view_screen);
-		//printf("stack processing\n");
 		switch(retCode.retCode) {
 			case SAME_VIEW: break;
 			case BACK_VIEW: view_stack.pop(); break;

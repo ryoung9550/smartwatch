@@ -3,8 +3,9 @@
 
 #include <cstdint>
 #include "../input.hpp"
+#include "../ssd1306-driver/include/ssd1306.hpp"
 
-#define ICON_NUM 5 // Number of icons avaiable
+#define ICON_NUM 8 // Number of icons avaiable
 #define ICON_SIZE 8 // Number of uint16s needed for the icon
 
 typedef uint16_t IconBox[ICON_SIZE]; // 16 width pixes and 8 in height
@@ -14,6 +15,8 @@ typedef uint8_t ContentArea[0x300]; // 96x64 area
 struct View {
 	IconBox btn_0, btn_1, btn_2;
 	ContentArea content;
+	OLED* screen;
+
 };
 
 extern IconBox icons[ICON_NUM];
