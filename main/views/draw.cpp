@@ -49,7 +49,6 @@ static void drawBtn(OLED& screen, const IconBox& icon, Btn btn_num)
 
 void drawView(OLED& screen, const View& view)
 {
-	screen.clear();
 	drawBtn(screen, view.btn_0, Btn::BTN_0);
 	drawBtn(screen, view.btn_1, Btn::BTN_1);
 	drawBtn(screen, view.btn_2, Btn::BTN_2);

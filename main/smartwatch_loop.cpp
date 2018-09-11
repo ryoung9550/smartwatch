@@ -46,6 +46,7 @@ void app_main()
 	view_stack.push(&menu_view);
 	
 	while(!view_stack.empty()) {
+		screen.clear();
 		View_Ret retCode = view_stack.top()(view_screen, input);
 		drawView(screen, view_screen);
 		switch(retCode.retCode) {

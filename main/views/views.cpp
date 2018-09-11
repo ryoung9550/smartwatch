@@ -68,6 +68,7 @@ View_Ret menu_view(View& view, const Input input)
 	for(int i = 0; i < MENU_ITEM_NUM; ++i) {
 		view.screen->draw_string(SCREEN_MARGIN, (i * (8 + SCREEN_MARGIN)), menu_items[i].name, BLACK, WHITE);
 	}
+	view.screen->refresh(1);
 	
 	return {SAME_VIEW, nullptr};
 }
