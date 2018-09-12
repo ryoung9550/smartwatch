@@ -36,6 +36,9 @@ View_Ret main_view(View& view, const Input input)
 	memcpy(view.btn_1, icons[0], sizeof(IconBox));
 	memcpy(view.btn_2, icons[1], sizeof(IconBox));
 
+	if(input.btn_0 == BTN_HI) {
+		return {NEW_VIEW, menu_view};
+	}
 
 
 	return {SAME_VIEW, nullptr};
@@ -58,7 +61,7 @@ Menu_Item menu_items[MENU_ITEM_NUM] = {
 	{"Exit", BACK_VIEW, nullptr}
 };
 
-unsigned cursor_pos = 1;
+unsigned cursor_pos = 0;
 
 View_Ret menu_view(View& view, const Input input)
 {
@@ -71,6 +74,14 @@ View_Ret menu_view(View& view, const Input input)
 	}
 	else if(input.btn_1 == BTN_HI && cursor_pos < MENU_ITEM_NUM - 1) {
 		++cursor_pos;
+	}
+	else if(input.btn_2 == BTN_HI) {
+		if(cursor_pos == (MENU_ITEM_NUM - 1)) {
+			cursor_pos = 0;
+			return {BACK_VIEW, nullptr};
+		} else {
+			return {NEW_VIEW, menu_items[cursor_pos].view};
+		}
 	}
 
 	for(int i = 0; i < MENU_ITEM_NUM; ++i) {
