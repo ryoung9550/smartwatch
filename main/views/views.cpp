@@ -1,4 +1,5 @@
 #include "../input.hpp"
+#include "../time.hpp"
 #include "draw.hpp"
 #include "views.hpp"
 #include <cstring>
@@ -30,16 +31,22 @@ IconBox icons[ICON_NUM] {
 	 0xf800, 0xf000, 0xe000, 0xc000}
 };
 
+const unsigned TIME_HEIGHT = (64 / 2) - (8 / 2);
+const unsigned TIME_WIDTH = 32;
+WatchTime watchTime({12, 0});
+
 View_Ret main_view(View& view, const Input input)
 {
 	memcpy(view.btn_0, icons[2], sizeof(IconBox));
 	memcpy(view.btn_1, icons[0], sizeof(IconBox));
 	memcpy(view.btn_2, icons[1], sizeof(IconBox));
+	watchTime.tick();
 
 	if(input.btn_0 == BTN_HI) {
 		return {NEW_VIEW, menu_view};
 	}
 
+	view.screen->draw_string(TIME_WIDTH, TIME_HEIGHT, watchTime.getTime().c_str(), WHITE, BLACK);
 
 	return {SAME_VIEW, nullptr};
 }
