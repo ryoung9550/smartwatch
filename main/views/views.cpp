@@ -143,7 +143,7 @@ View_Ret time_view(View& view, const Input input)
 
 			// Reset Values
 			numIndex = 0;
-			timeDigits[0] = 0;
+			timeDigits[0] = 12;
 			timeDigits[1] = 0;
 			timeDigits[2] = 0;
 			timeDigits[3] = 0;
