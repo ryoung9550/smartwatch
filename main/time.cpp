@@ -9,7 +9,7 @@ WatchTime::WatchTime(const TimeRep& initTime)
 {
 	time = initTime;
 	minInterval = 0;
-	secondsAdj = 0;
+	secondsAdj = 240;
 	std::time(&lastTime);
 }
 
@@ -45,9 +45,15 @@ std::string WatchTime::getTime()
 	return retStr;
 }
 
+void WatchTime::setTime(const TimeRep& newTime)
+{
+	secondsAdj = ((newTime.hours * 60 * 60) + (newTime.minutes * 60)) - 
+		(std::clock() / CLOCKS_PER_SEC);
+}
+
 void WatchTime::tick()
 {
-	unsigned seconds = (((std::clock() / CLOCKS_PER_SEC * 500) + secondsAdj) % 86400);
+	unsigned seconds = (((std::clock() / CLOCKS_PER_SEC) + secondsAdj) % 86400);
 	//unsigned seconds = (((std::clock() / CLOCKS_PER_SEC) + secondsAdj) % 86400);
 	time.minutes = seconds / 60 % 60;
 	time.hours = seconds / 3600 % 24;

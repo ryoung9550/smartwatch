@@ -12,13 +12,14 @@ struct TimeRep
 class WatchTime
 {
 	TimeRep time;
-	unsigned secondsAdj; // second adjust for time after 0:00
+	int secondsAdj; // second adjust for time after 0:00
 	unsigned short minInterval;
 	time_t newTime;
 	time_t lastTime;
 public:
 	WatchTime(const TimeRep& initTime);
 	std::string getTime();
+	void setTime(const TimeRep& newTime);
 	void tick();
 };
 

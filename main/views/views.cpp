@@ -62,8 +62,22 @@ struct Menu_Item
 #define MENU_HEIGHT_GAP 7
 #define SCREEN_MARGIN 24
 
+namespace TimeView {
+
+const unsigned BEGINNING_REF = (128 / 2) - (7 * 6 / 2);
+const unsigned CHAR_SPACING = 6;
+
 unsigned short numIndex = 0; // The selected number in time
-unsigned short timeDigits[3] {0, 0, 0};
+
+/*
+ * 0 - Hours
+ * 1 - Tens of Minutes
+ * 2 - Ones of Minutes
+ * 3 - AM = 0 --- PM = 1
+ */
+unsigned short timeDigits[4] {12, 0, 0, 0};
+
+unsigned cursor_x = 0;
 
 View_Ret time_view(View& view, const Input input)
 {
@@ -72,25 +86,105 @@ View_Ret time_view(View& view, const Input input)
 	memcpy(view.btn_1, icons[6], sizeof(IconBox));
 	memcpy(view.btn_2, icons[3], sizeof(IconBox));
 
+	// Input Handling
+
+	if(input.btn_0 == BTN_HI) {
+		switch(numIndex) {
+		case 0: 
+			if(timeDigits[0] < 12) {
+				++timeDigits[0];
+			}
+			break;
+		case 1:
+			if(timeDigits[1] < 5) {
+				++timeDigits[1];
+			}
+			break;
+		case 2:
+			if(timeDigits[2] < 9) {
+				++timeDigits[2];
+			}
+			break;
+		case 3:
+			if(timeDigits[3] == 0) {
+				timeDigits[3] = 1;
+			}
+			break;
+		}
+	}
+
+	if(input.btn_1 == BTN_HI) {
+		switch(numIndex) {
+		case 0:
+			if(timeDigits[0] > 1) {
+				--timeDigits[numIndex];
+			}
+			break;
+		case 1:
+		case 2:
+		case 3:
+			if(timeDigits[numIndex] > 0) {
+				--timeDigits[numIndex];
+			}
+			break;
+		}
+	}
+
 	if(input.btn_2 == BTN_HI) {
 		++numIndex;
 		if(numIndex > 3) {
+			TimeRep retTime{0, 0};
+			retTime.minutes = (timeDigits[1] * 10) + timeDigits[2];
+			if(timeDigits[0] == 12) {
+				timeDigits[0] = 0;
+			}
+			retTime.hours = timeDigits[0] + (timeDigits[3] * 12);
+			watchTime.setTime(retTime);
+
+			// Reset Values
 			numIndex = 0;
 			timeDigits[0] = 0;
 			timeDigits[1] = 0;
 			timeDigits[2] = 0;
+			timeDigits[3] = 0;
+
 			return {BACK_VIEW, nullptr};
 		}
 	}
 
-	view.screen->draw_string(TIME_WIDTH, TIME_HEIGHT, watchTime.getTime().c_str(), WHITE, BLACK);
+
+	char firstDigit = (timeDigits[0] < 10) ? ' ' : '1';
+	char secondDigit = '0' + timeDigits[0] % 10;
+	char thirdDigit = '0' + timeDigits[1];
+	char fourthDigit = '0' + timeDigits[2];
+	char charTOD = timeDigits[3] == 0 ? 'A' : 'P';
+
+	switch(numIndex) {
+	case 0: cursor_x = 1; break;
+	case 1: cursor_x = 3; break;
+	case 2: cursor_x = 4; break;
+	case 3: cursor_x = 5; break;
+	}
+
+
+	view.screen->draw_char(BEGINNING_REF + CHAR_SPACING * 0, TIME_HEIGHT, firstDigit, WHITE, BLACK);
+	view.screen->draw_char(BEGINNING_REF + CHAR_SPACING * 1, TIME_HEIGHT, secondDigit, WHITE, BLACK);
+	view.screen->draw_char(BEGINNING_REF + CHAR_SPACING * 2, TIME_HEIGHT, ':', WHITE, BLACK);
+	view.screen->draw_char(BEGINNING_REF + CHAR_SPACING * 3, TIME_HEIGHT, thirdDigit, WHITE, BLACK);
+	view.screen->draw_char(BEGINNING_REF + CHAR_SPACING * 4, TIME_HEIGHT, fourthDigit, WHITE, BLACK);
+	view.screen->draw_char(BEGINNING_REF + CHAR_SPACING * 5, TIME_HEIGHT, charTOD, WHITE, BLACK);
+	view.screen->draw_char(BEGINNING_REF + CHAR_SPACING * 6, TIME_HEIGHT, 'M', WHITE, BLACK);
+
+	drawIcon(*view.screen, icons[5], BEGINNING_REF + CHAR_SPACING * cursor_x, TIME_HEIGHT + 10);
 
 	return {SAME_VIEW, nullptr};
 }
 
+};
+
 Menu_Item menu_items[MENU_ITEM_NUM] = {
 	{"Connect BT device", NEW_VIEW, nullptr},
-	{"Setup time", NEW_VIEW, time_view},
+	{"Setup time", NEW_VIEW, TimeView::time_view},
 	{"Exit", BACK_VIEW, nullptr}
 };
 
