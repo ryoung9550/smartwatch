@@ -9,7 +9,7 @@ WatchTime::WatchTime(const TimeRep& initTime)
 {
 	time = initTime;
 	minInterval = 0;
-	secondsAdj = 240;
+	secondsAdj = 0;
 	std::time(&lastTime);
 }
 
