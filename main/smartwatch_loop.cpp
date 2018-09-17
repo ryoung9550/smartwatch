@@ -54,7 +54,7 @@ void app_main()
 	// Create Screen object
 	OLED screen = OLED(GPIO_NUM_19, GPIO_NUM_22, SSD1306_128x64);
 	screen.init();
-	screen.select_font(1);
+	screen.select_font(0);
 
 	View view_screen;
 	view_screen.screen = &screen;

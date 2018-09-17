@@ -32,15 +32,15 @@ IconBox icons[ICON_NUM] {
 };
 
 const unsigned TIME_HEIGHT = (64 / 2) - (8 / 2);
-const unsigned TIME_WIDTH = 32;
+const unsigned TIME_WIDTH = (128 / 2) - (42 / 2);
 WatchTime watchTime({12, 0});
 
 View_Ret main_view(View& view, const Input input)
 {
+	view.screen->select_font(0);
 	memcpy(view.btn_0, icons[2], sizeof(IconBox));
 	memcpy(view.btn_1, icons[0], sizeof(IconBox));
 	memcpy(view.btn_2, icons[1], sizeof(IconBox));
-	watchTime.tick();
 
 	if(input.btn_0 == BTN_HI) {
 		return {NEW_VIEW, menu_view};
@@ -62,9 +62,35 @@ struct Menu_Item
 #define MENU_HEIGHT_GAP 7
 #define SCREEN_MARGIN 24
 
+unsigned short numIndex = 0; // The selected number in time
+unsigned short timeDigits[3] {0, 0, 0};
+
+View_Ret time_view(View& view, const Input input)
+{
+	view.screen->select_font(0);
+	memcpy(view.btn_0, icons[5], sizeof(IconBox));
+	memcpy(view.btn_1, icons[6], sizeof(IconBox));
+	memcpy(view.btn_2, icons[3], sizeof(IconBox));
+
+	if(input.btn_2 == BTN_HI) {
+		++numIndex;
+		if(numIndex > 3) {
+			numIndex = 0;
+			timeDigits[0] = 0;
+			timeDigits[1] = 0;
+			timeDigits[2] = 0;
+			return {BACK_VIEW, nullptr};
+		}
+	}
+
+	view.screen->draw_string(TIME_WIDTH, TIME_HEIGHT, watchTime.getTime().c_str(), WHITE, BLACK);
+
+	return {SAME_VIEW, nullptr};
+}
+
 Menu_Item menu_items[MENU_ITEM_NUM] = {
 	{"Connect BT device", NEW_VIEW, nullptr},
-	{"Setup time", NEW_VIEW, nullptr},
+	{"Setup time", NEW_VIEW, time_view},
 	{"Exit", BACK_VIEW, nullptr}
 };
 
@@ -72,6 +98,7 @@ unsigned cursor_pos = 0;
 
 View_Ret menu_view(View& view, const Input input)
 {
+	view.screen->select_font(1);
 	memcpy(view.btn_0, icons[5], sizeof(IconBox));
 	memcpy(view.btn_1, icons[6], sizeof(IconBox));
 	memcpy(view.btn_2, icons[3], sizeof(IconBox));
